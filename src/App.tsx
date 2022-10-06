@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import createCache from '@emotion/cache';
+import { CacheProvider } from "@emotion/react";
+import { Router } from './routes';
+import { ThemeProvider } from "@mui/material";
+import GoogleAnalytics from "./components/GoogleAnalytics";
+import { createTheme } from './theme';
 
-function App() {
+const muiCache = createCache({
+  'key': 'mui',
+  'prepend': true,
+});
+  
+const App = () => {
+  const theme = createTheme();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CacheProvider value={muiCache}>
+        <GoogleAnalytics />
+        <Router />
+      </CacheProvider>
+    </ThemeProvider>
   );
 }
 
