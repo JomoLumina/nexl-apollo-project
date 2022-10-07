@@ -8,6 +8,7 @@ import Header from './Header';
 import type { Launch } from '../../types/Launch';
 import { useQuery } from '@apollo/client';
 import GET_UPCOMING_LAUNCES from '../../queries/GET_UPCOMING_LAUNCHES';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const useStyles = makeStyles()((theme: Theme) => {
   return {
@@ -24,10 +25,12 @@ const useStyles = makeStyles()((theme: Theme) => {
 
 const UpcomingLaunchesView: FC = () => {
   const { classes } = useStyles();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [upcomingLaunches, setUpcomingLaunches] = useState<Launch[]>([]);
   const {loading, data, error} = useQuery(GET_UPCOMING_LAUNCES);
 
   useEffect(() =>{
+    setIsLoading(loading);
     if(!loading && data){
       setUpcomingLaunches(data.launchesUpcoming);
     }else if(error){
@@ -41,7 +44,7 @@ const UpcomingLaunchesView: FC = () => {
       <Container className={classes.container}>
         <Header />
         <Box mt={3}>
-          <Results launches={upcomingLaunches} />
+          {isLoading ? <LoadingScreen /> : <Results launches={upcomingLaunches} />}
         </Box>
       </Container>
     </Page>

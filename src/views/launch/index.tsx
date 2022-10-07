@@ -10,6 +10,7 @@ import Header from './Header';
 import Details from './details';
 import { useQuery } from '@apollo/client';
 import GET_LAUNCH from '../../queries/GET_LAUNCH';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const useStyles = makeStyles()((theme: Theme) => {
   return {
@@ -27,6 +28,7 @@ const LaunchDetailsView: FC = () => {
   const { classes } = useStyles();
   const params: Readonly<Params<string>> = useParams();
   const launchId: string | undefined = params.launchId;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [launch, setLaunch] = useState<Launch | null>(null);
   
   if(!launchId){
@@ -35,6 +37,7 @@ const LaunchDetailsView: FC = () => {
   const {loading, data, error} = useQuery(GET_LAUNCH,{ variables: { launchId }});
 
   useEffect(() =>{
+    setIsLoading(loading);
     if(!loading && data){
       setLaunch(data.launch);
     }else if(error){
@@ -48,7 +51,7 @@ const LaunchDetailsView: FC = () => {
         {launch && <Header />}
         <Divider />
         <Box mt={3}>
-          {launch && <Details launch={launch} />}
+          {launch && !isLoading ? <Details launch={launch} /> : <LoadingScreen/>}
         </Box>
       </Container>
     </Page>

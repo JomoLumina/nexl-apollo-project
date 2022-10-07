@@ -9,6 +9,7 @@ import { useQuery } from '@apollo/client';
 import GET_LAUNCH_LATEST from '../../queries/GET_LAUNCH_LATEST';
 import GET_LAUNCH_NEXT from '../../queries/GET_LAUNCH_NEXT';
 import Details from './details';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const useStyles = makeStyles()((theme: Theme) => {
   return {
@@ -25,12 +26,14 @@ const useStyles = makeStyles()((theme: Theme) => {
 
 const HomeView: FC = () => {
   const { classes } = useStyles();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [latestLaunch, setLatestLaunch] = useState<Launch | null>(null);
   const [nextLaunch, setNextLaunch] = useState<Launch | null>(null);
   const latestLaunchResponse = useQuery(GET_LAUNCH_LATEST);
   const nextLaunchResponse = useQuery(GET_LAUNCH_NEXT);
 
   useEffect(() =>{
+    setIsLoading(latestLaunchResponse.loading && nextLaunchResponse.loading);
     if(latestLaunchResponse.data && !latestLaunchResponse.loading){
       setLatestLaunch(latestLaunchResponse.data.launchLatest);
     }else if(latestLaunchResponse && latestLaunchResponse.error){
@@ -48,10 +51,11 @@ const HomeView: FC = () => {
       <Container className={classes.container}>
         <Header />
         <Box mt={3}>
-        {latestLaunch && nextLaunch && 
-          <Details 
-            latestLaunch={latestLaunch} 
-            nextLaunch={nextLaunch} />}
+          {latestLaunch && nextLaunch && !isLoading ? 
+            <Details 
+              latestLaunch={latestLaunch} 
+              nextLaunch={nextLaunch} /> :
+            <LoadingScreen />}
         </Box>
       </Container>
     </Page>

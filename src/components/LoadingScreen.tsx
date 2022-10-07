@@ -39,12 +39,11 @@ const LoadingScreen: FC<LoadingScreenProps> = ({height}) => {
   }, []);
 
   return (
-    <div className={classes.root} style={{minHeight: height}}>
-      <Box className={classes.container}>
-      {/* height: "80px !important", width: "80px !important" */}
+    <Box className={classes.root} minHeight={height} marginTop={8}>
+      <Box className={classes.container} minWidth="calc(100% - 80px)">
         <LinearProgress sx={{color: "#09357B"}}/>  
       </Box>
-    </div>
+    </Box>
   );
 };
 

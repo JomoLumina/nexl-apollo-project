@@ -8,6 +8,7 @@ import Header from './Header';
 import type { Launch } from '../../types/Launch';
 import { useQuery } from '@apollo/client';
 import GET_PAST_LAUNCES from '../../queries/GET_PAST_LAUNCHES';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const useStyles = makeStyles()((theme: Theme) => {
   return {
@@ -24,10 +25,12 @@ const useStyles = makeStyles()((theme: Theme) => {
 
 const PastLaunchesView: FC = () => {
   const { classes } = useStyles();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pastLaunches, setPastLaunches] = useState<Launch[]>([]);
   const {loading, data, error} = useQuery(GET_PAST_LAUNCES);
 
   useEffect(() =>{
+    setIsLoading(loading);
     if(!loading && data){
       setPastLaunches(data.launchesPast);
     }else if(error){
@@ -40,7 +43,7 @@ const PastLaunchesView: FC = () => {
       <Container className={classes.container}>
         <Header />
         <Box mt={3}>
-          <Results launches={pastLaunches} />
+          {isLoading ? <LoadingScreen /> : <Results launches={pastLaunches} />}
         </Box>
       </Container>
     </Page>
